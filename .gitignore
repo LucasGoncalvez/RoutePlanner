@@ -1,0 +1,85 @@
+# Archivo .gitignore para proyecto fullstack (Django + React)
+
+### Backend (Django) ###
+# Entorno virtual
+route-planer-backend/venv/
+route-planer-backend/.venv/
+
+# Archivos de entorno
+route-planer-backend/.env
+route-planer-backend/.env.local
+route-planer-backend/.env*.local
+
+# Base de datos
+route-planer-backend/db.sqlite3
+route-planer-backend/*.sqlite
+
+# Archivos de desarrollo
+route-planer-backend/__pycache__/
+route-planer-backend/*/__pycache__/
+route-planer-backend/*/*/__pycache__/
+route-planer-backend/*.py[cod]
+route-planer-backend/*$py.class
+
+# Archivos estáticos recolectados
+route-planer-backend/staticfiles/
+
+# Media files
+route-planer-backend/media/
+
+# IDE/Editor
+route-planer-backend/.vscode/
+route-planer-backend/.idea/
+
+# Logs
+route-planer-backend/*.log
+route-planer-backend/logs/
+
+# Migraciones (opcional, algunos prefieren versionarlas)
+# route-planer-backend/*/migrations/*.py
+# !route-planer-backend/*/migrations/__init__.py
+
+### Frontend (React) ###
+# Dependencias
+route-planner-frontend/node_modules/
+route-planner-frontend/.pnp
+route-planner-frontend/.pnp.js
+
+# Testing
+route-planner-frontend/coverage/
+
+# Producción
+route-planner-frontend/build/
+route-planner-frontend/dist/
+
+# Variables de entorno
+route-planner-frontend/.env
+route-planner-frontend/.env.local
+route-planner-frontend/.env*.local
+
+# Logs
+route-planner-frontend/npm-debug.log*
+route-planner-frontend/yarn-debug.log*
+route-planner-frontend/yarn-error.log*
+
+# Editor/IDE
+route-planner-frontend/.vscode/
+route-planner-frontend/.idea/
+
+# Archivos del sistema
+route-planner-frontend/.DS_Store
+route-planner-frontend/Thumbs.db
+
+# Archivos de configuración local
+route-planner-frontend/.eslintcache
+
+### General ###
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+*~
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
