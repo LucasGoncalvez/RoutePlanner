@@ -2,42 +2,42 @@
 
 ### Backend (Django) ###
 # Entorno virtual
-route-planer-backend/venv/
-route-planer-backend/.venv/
+route-planner-backend/venv/
+route-planner-backend/.venv/
 
 # Archivos de entorno
-route-planer-backend/.env
-route-planer-backend/.env.local
-route-planer-backend/.env*.local
+route-planner-backend/.env
+route-planner-backend/.env.local
+route-planner-backend/.env*.local
 
 # Base de datos
-route-planer-backend/db.sqlite3
-route-planer-backend/*.sqlite
+route-planner-backend/db.sqlite3
+route-planner-backend/*.sqlite
 
 # Archivos de desarrollo
-route-planer-backend/__pycache__/
-route-planer-backend/*/__pycache__/
-route-planer-backend/*/*/__pycache__/
-route-planer-backend/*.py[cod]
-route-planer-backend/*$py.class
+route-planner-backend/__pycache__/
+route-planner-backend/*/__pycache__/
+route-planner-backend/*/*/__pycache__/
+route-planner-backend/*.py[cod]
+route-planner-backend/*$py.class
 
 # Archivos estáticos recolectados
-route-planer-backend/staticfiles/
+route-planner-backend/staticfiles/
 
 # Media files
-route-planer-backend/media/
+route-planner-backend/media/
 
 # IDE/Editor
-route-planer-backend/.vscode/
-route-planer-backend/.idea/
+route-planner-backend/.vscode/
+route-planner-backend/.idea/
 
 # Logs
-route-planer-backend/*.log
-route-planer-backend/logs/
+route-planner-backend/*.log
+route-planner-backend/logs/
 
 # Migraciones (opcional, algunos prefieren versionarlas)
-# route-planer-backend/*/migrations/*.py
-# !route-planer-backend/*/migrations/__init__.py
+# route-planner-backend/*/migrations/*.py
+# !route-planner-backend/*/migrations/__init__.py
 
 ### Frontend (React) ###
 # Dependencias
