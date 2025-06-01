@@ -3,12 +3,37 @@ import { createSlice } from "@reduxjs/toolkit";
 const plannerSlice = createSlice({
     name: 'planner',
     initialState: {
-        routes: []
+        origin: null,
+        destinations: [],
+        optimalPath: [],
+        loading: false,
+        error: null,
     },
     reducers: {
-        addRoute: (state, { payload }) => {
-            state.routes.push(payload);
-        }
+        setOrigin(state, action) {
+            state.origin = action.payload;
+        },
+        addDestination(state, action) {
+            state.destinations.push(action.payload);
+        },
+        removeDestination(state, action) {
+            state.destinations = state.destinations.filter((_, i) => i !== action.payload);
+        },
+        clearDestinations(state) {
+            state.destinations = [];
+        },
+        requestOptimalPath(state) {
+            state.loading = true;
+            state.error = null;
+        },
+        setOptimalPath(state, action) {
+            state.optimalPath = action.payload;
+            state.loading = false;
+        },
+        setError(state, action) {
+            state.error = action.payload;
+            state.loading = false;
+        },
     }
 })
 

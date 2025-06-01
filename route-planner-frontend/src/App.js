@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { browserHistory, rootStore } from './root/rootStore';
 import AppPage from 'src/modules/app/pages/AppPage';
+import 'leaflet/dist/leaflet.css';
 
 function App() {
   return (

@@ -1,22 +1,75 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
 import { plannerActions } from '../handlers/redux';
+import { DEFAULT_LOCATION } from '../helpers';
 
-const RoutePlanner = () => {
+export default function RoutePlanner() {
     const dispatch = useDispatch();
+    const { origin, destinations, optimalPath, loading } = useSelector(state => state.planner);
 
-    const { routes } = useSelector(state => state.planner);
+    const [newLocation, setNewLocation] = useState('');
 
-    useEffect(() => {
-        console.log(routes);
-    }, [routes])
+    const parseLocation = (text) => {
+        const [lat, lng] = text.split(',').map(Number);
+        return { lat, lng };
+    };
+
+    const handleAdd = () => {
+        const loc = parseLocation(newLocation);
+        if (!origin) {
+            dispatch(plannerActions.setOrigin(loc));
+        } else {
+            dispatch(plannerActions.addDestination(loc));
+        }
+        setNewLocation('');
+    };
+
+    const handlePlanRoute = () => {
+        if (origin && destinations.length > 0) {
+            console.log(origin, destinations);
+            // dispatch(plannerActions.requestOptimalPath({ origin, destinations }));
+        }
+    };
 
     return (
-        <>
-            <div>RoutePlanner</div>
-            <button onClick={() => dispatch(plannerActions.addRoute({ id: 1, name: "Ruta 1" }))}>Cargar ruta</button>
-        </>
-    )
-}
+        <div className="p-6 max-w-4xl mx-auto space-y-4">
+            <h1 className="text-2xl font-bold">Planificador de Rutas</h1>
 
-export default RoutePlanner
+            <div className="flex gap-2">
+                <input
+                    type="text"
+                    placeholder="Lat,Lng"
+                    className="border p-2 rounded w-full"
+                    value={newLocation}
+                    onChange={e => setNewLocation(e.target.value)}
+                />
+                <button onClick={handleAdd} className="bg-blue-600 text-white px-4 py-2 rounded">
+                    Agregar
+                </button>
+            </div>
+
+            <button onClick={handlePlanRoute} className="bg-green-600 text-white px-4 py-2 rounded">
+                Calcular Ruta Óptima
+            </button>
+
+            {loading && <p>Cargando ruta óptima...</p>}
+
+            <div className="h-[500px] mt-4">
+                <MapContainer
+                    center={origin ? [origin.lat, origin.lng] : [DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng]}
+                    zoom={13}
+                    className="h-full w-full">
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    {origin && <Marker position={[origin.lat, origin.lng]} />}
+                    {destinations.map((d, i) => (
+                        <Marker key={i} position={[d.lat, d.lng]} />
+                    ))}
+                    {optimalPath.length > 1 && (
+                        <Polyline positions={optimalPath.map(p => [p.lat, p.lng])} color="blue" />
+                    )}
+                </MapContainer>
+            </div>
+        </div>
+    );
+}
