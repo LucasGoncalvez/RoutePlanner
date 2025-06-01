@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'drf_yasg',
     'apps.routes',
 ]
 
@@ -138,3 +139,17 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,  # Deshabilita autenticación por sesión en Swagger
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+}
+
+# Para tener una api se debe crear una cuenta en https://openrouteservice.org/dev/
+ORS_API_KEY = "5b3ce3597851110001cf62482d8d27e469e043f88f5f8eb465f2b2ae"

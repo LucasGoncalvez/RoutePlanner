@@ -1,16 +1,18 @@
 from rest_framework import serializers
-from apps.routes.models import Location, Route
 
-class LocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Location
-        fields = ['id', 'name', 'address', 'latitude', 'longitude', 'is_default']
+class CoordinateSerializer(serializers.Serializer):
+    lat = serializers.FloatField()
+    lng = serializers.FloatField()
 
-
-class RouteSerializer(serializers.ModelSerializer):
-    origin = LocationSerializer()
-    destinations = LocationSerializer(many=True)
-    
-    class Meta:
-        model = Route
-        fields = ['id', 'name', 'origin', 'destinations', 'optimized_route', 'created_at']
+class RoutePlannerSerializer(serializers.Serializer):
+    origin = CoordinateSerializer()
+    destinations = serializers.ListSerializer(
+        child=CoordinateSerializer(),
+        allow_empty=False,
+        min_length=1
+    )
+    mode = serializers.ChoiceField(
+        choices=["driving-car", "cycling-regular", "foot-walking"],
+        default="driving-car",
+        required=False
+    )
