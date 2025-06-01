@@ -37,7 +37,7 @@ const plannerSlice = createSlice({
             state.error = null;
         },
         setOptimalPath(state, action) {
-            state.optimalPath = action.payload.path;
+            state.optimalPath = action.payload.ordered_destinations;
             state.routeInfo = {
                 totalDistance: action.payload.total_distance_km,
                 totalDuration: action.payload.total_estimated_duration_minutes
