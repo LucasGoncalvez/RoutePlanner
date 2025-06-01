@@ -50,17 +50,33 @@ const createColoredIcon = (color) => {
   });
 };
 
+const createCustomSvgIcon = (hexColor) => {
+  const svg = `
+    <svg width="20" height="40" viewBox="0 0 30 50" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 0C6.71573 0 0 6.71573 0 15C0 27.5 15 50 15 50C15 50 30 27.5 30 15C30 6.71573 23.2843 0 15 0Z" fill="${hexColor}" stroke="#000" stroke-width="2"/>
+      <circle cx="15" cy="15" r="6" fill="white"/>
+    </svg>
+  `;
+  return new L.DivIcon({
+    html: svg,
+    className: "",
+    iconSize: [30, 50],
+    iconAnchor: [15, 50],
+    popupAnchor: [0, -45],
+  });
+};
+
 export default function RoutePlanner() {
   const dispatch = useDispatch();
-  const { 
-    origin, 
-    destinations, 
-    optimalPath, 
-    loading, 
-    error: apiError, 
-    routeInfo 
+  const {
+    origin,
+    destinations,
+    optimalPath,
+    loading,
+    error: apiError,
+    routeInfo
   } = useSelector(state => state.planner);
-  
+
   const [newLocation, setNewLocation] = useState('');
   const [locationName, setLocationName] = useState('');
   const [error, setError] = useState('');
@@ -81,7 +97,7 @@ export default function RoutePlanner() {
     setError('');
     const loc = parseLocation(newLocation);
     if (!loc) return;
-    
+
     if (!origin) {
       dispatch(plannerActions.setOrigin(loc));
     } else {
@@ -100,10 +116,10 @@ export default function RoutePlanner() {
       setError('Debes agregar al menos un destino');
       return;
     }
-    dispatch(plannerActions.requestOptimalPath({ 
-      origin, 
+    dispatch(plannerActions.requestOptimalPath({
+      origin,
       destinations,
-      mode: transportMode 
+      mode: transportMode
     }));
   };
 
@@ -114,7 +130,7 @@ export default function RoutePlanner() {
   // Función para dividir la ruta óptima en segmentos para colorear
   const getPathSegments = () => {
     if (optimalPath.length < 2) return [];
-    
+
     const segments = [];
     for (let i = 0; i < optimalPath.length - 1; i++) {
       segments.push({
@@ -133,7 +149,7 @@ export default function RoutePlanner() {
           {/* Panel izquierdo - Controles y lista de ubicaciones */}
           <div className="w-full lg:w-1/3 bg-white rounded-lg shadow-md p-6">
             <h1 className="text-2xl font-bold text-gray-800 mb-6">Planificador de Rutas</h1>
-            
+
             <div className="space-y-4">
               {/* Selector de modo de transporte */}
               <div className="flex flex-col gap-1">
@@ -166,7 +182,7 @@ export default function RoutePlanner() {
                     onChange={(e) => setNewLocation(e.target.value)}
                     onKeyPress={handleKeyPress}
                   />
-                  <button 
+                  <button
                     onClick={handleAdd}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
                   >
@@ -178,7 +194,7 @@ export default function RoutePlanner() {
               {error && <p className="text-red-500 text-sm">{error}</p>}
               {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
 
-              <button 
+              <button
                 onClick={handlePlanRoute}
                 disabled={loading}
                 className={`w-full py-2 px-4 rounded transition-colors ${loading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700 text-white'}`}
@@ -233,8 +249,8 @@ export default function RoutePlanner() {
                 {destinations.map((dest, index) => {
                   const orderIndex = optimalPath.findIndex(p => p.lat === dest.lat && p.lng === dest.lng);
                   return (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="bg-blue-50 p-3 rounded border border-blue-200"
                       style={{ borderLeft: `4px solid ${COLOR_PALETTE[index % COLOR_PALETTE.length]}` }}
                     >
@@ -261,11 +277,11 @@ export default function RoutePlanner() {
               zoom={13}
               className="h-full w-full"
             >
-              <TileLayer 
+              <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              
+
               {origin && (
                 <Marker position={[origin.lat, origin.lng]} icon={originIcon}>
                   <Popup>
@@ -279,15 +295,15 @@ export default function RoutePlanner() {
               {destinations.map((d, i) => {
                 const orderIndex = optimalPath.findIndex(p => p.lat === d.lat && p.lng === d.lng);
                 return (
-                  <Marker 
-                    key={i} 
+                  <Marker
+                    key={i}
                     position={[d.lat, d.lng]}
-                    icon={createColoredIcon(COLOR_PALETTE[i % COLOR_PALETTE.length].replace('#', ''))}
+                    icon={createCustomSvgIcon(COLOR_PALETTE[i % COLOR_PALETTE.length])}
                   >
                     <Popup>
                       <div className="space-y-1">
-                        <span 
-                          className="font-semibold" 
+                        <span
+                          className="font-semibold"
                           style={{ color: COLOR_PALETTE[i % COLOR_PALETTE.length] }}
                         >
                           {d.name}
@@ -309,24 +325,24 @@ export default function RoutePlanner() {
               {optimalPath.length > 1 && (
                 <>
                   {getPathSegments().map((segment, i) => (
-                    <Polyline 
+                    <Polyline
                       key={i}
-                      positions={segment.positions.map(p => [p.lat, p.lng])} 
+                      positions={segment.positions.map(p => [p.lat, p.lng])}
                       color={segment.color}
                       weight={4}
                       opacity={0.7}
                     />
                   ))}
-                  
+
                   {/* Marcadores de orden en la ruta */}
                   {optimalPath.map((point, i) => (
                     i > 0 && (
-                      <Marker 
+                      <Marker
                         key={`label-${i}`}
                         position={[point.lat, point.lng]}
                         icon={L.divIcon({
                           className: 'path-label',
-                          html: `<div style="background-color: ${COLOR_PALETTE[(i-1) % COLOR_PALETTE.length]}; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold;">${i}</div>`,
+                          html: `<div style="background-color: ${COLOR_PALETTE[(i - 1) % COLOR_PALETTE.length]}; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold;">${i}</div>`,
                           iconSize: [24, 24]
                         })}
                         zIndexOffset={1000}

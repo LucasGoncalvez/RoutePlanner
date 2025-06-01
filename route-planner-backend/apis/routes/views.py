@@ -67,9 +67,8 @@ class OptimalRouteView(APIView):
                     best_order = perm
 
             # Construir respuesta con el orden óptimo
-            ordered_destinations = [destinations[i - 1] for i in best_order]
+            ordered_destinations = [origin] + [destinations[i - 1] for i in best_order]
             return Response({
-                "origin": origin,
                 "ordered_destinations": ordered_destinations,
                 "total_estimated_duration_minutes": round(min_duration / 60, 2),
                 "total_distance_km": round(best_distance / 1000, 2)
