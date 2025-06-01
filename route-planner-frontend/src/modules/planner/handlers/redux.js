@@ -32,7 +32,7 @@ const plannerSlice = createSlice({
             state.optimalPath = [];
             state.routeInfo = null;
         },
-        requestOptimalPath(state) {
+        requestOptimalPath(state, { payload }) {
             state.loading = true;
             state.error = null;
         },
@@ -42,7 +42,9 @@ const plannerSlice = createSlice({
                 totalDistance: action.payload.total_distance_km,
                 totalDuration: action.payload.total_estimated_duration_minutes
             };
-            state.loading = false;
+        },
+        setLoading(state, action) {
+            state.loading = action.payload;
         },
         setError(state, action) {
             state.error = action.payload;

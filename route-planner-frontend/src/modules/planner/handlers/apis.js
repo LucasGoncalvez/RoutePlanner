@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/";
+const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api/";
 
 export const plannerApis = () => {
     const headers = {
@@ -9,14 +9,10 @@ export const plannerApis = () => {
     };
 
     return {
-        getRoutes: () => axios.get(`${BASE_URL}routes/`, { headers }),
-        createRoute: (data) => axios.post(`${BASE_URL}routes/`, data, { headers }),
-        deleteRoute: (id) => axios.delete(`${BASE_URL}routes/${id}/`, { headers }),
-        
-        // Nueva función para calcular ruta óptima
-        calculateOptimalRoute: (data) => axios.post(`${BASE_URL}optimal-route/`, data, { headers }),
-        
-        // Función para guardar la ruta calculada
+        calculateOptimalRoute: async (data) => {
+            const response = await axios.post(`${BASE_URL}optimal-route/`, data, { headers })
+            return response.data
+        },
         saveCalculatedRoute: (data) => axios.post(`${BASE_URL}save-route/`, data, { headers })
     };
 }
