@@ -1,7 +1,7 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('optimal-route', views.optimal_route_view, name='optimal-route'),
+    path('optimal-route/', views.optimal_route_view, name='optimal-route'),
+    
 ]
