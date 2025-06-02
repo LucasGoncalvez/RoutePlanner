@@ -13,4 +13,4 @@ RUN npm install -g serve
 
 CMD ["npm", "start"]
 
-EXPOSE 5000
+EXPOSE 3000
