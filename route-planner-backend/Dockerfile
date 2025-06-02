@@ -19,5 +19,5 @@ COPY . .
 # Exponer el puerto de Django
 EXPOSE 8000
 
-# Comando de inicio (puedes ajustarlo si usas otro archivo wsgi/asgi)
+# Comando de inicio
 CMD ["python3", "manage.py", "runserver","0.0.0.0:8000"]
