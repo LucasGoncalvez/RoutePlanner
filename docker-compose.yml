@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./route-planner-backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    command: >
+      sh -c "python3 manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build:
+      context: ./route-planner-frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    command: serve -s build -l 3000
+
+networks:
+  app-network:
+    driver: bridge
