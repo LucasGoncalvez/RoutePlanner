@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import L from 'leaflet';
@@ -106,6 +106,10 @@ export default function RoutePlanner() {
     setNewLocation('');
     setLocationName('');
   };
+  
+    const handleClear = () => {
+        console.log('clear');
+  };
 
   const handlePlanRoute = () => {
     if (!origin) {
@@ -152,7 +156,7 @@ export default function RoutePlanner() {
 
             <div className="space-y-4">
               {/* Selector de modo de transporte */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 mt-5">
                 <label className="text-sm font-medium text-gray-700">Modo de transporte:</label>
                 <select
                   value={transportMode}
@@ -160,47 +164,73 @@ export default function RoutePlanner() {
                   className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="driving-car">Automóvil</option>
-                  <option value="cycling-regular">Bicicleta</option>
-                  <option value="foot-walking">Caminando</option>
+                  <option value="driving-car">Moto</option>
+                  <option value="foot-walking">A pie</option>
                 </select>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  placeholder="Nombre del lugar (opcional)"
-                  className="border border-gray-300 p-2 rounded w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={locationName}
-                  onChange={(e) => setLocationName(e.target.value)}
-                />
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Coordenadas: lat, lng"
-                    className="border border-gray-300 p-2 rounded w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={newLocation}
-                    onChange={(e) => setNewLocation(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                  />
-                  <button
-                    onClick={handleAdd}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
-                  >
-                    Agregar
-                  </button>
-                </div>
+
+              {/* Lista de ubicaciones */}
+              <div className="mt-6 space-y-3">
+                {origin && (
+                  <div className="bg-red-50 p-3 rounded border border-red-200">
+                    <h3 className="font-semibold text-red-800">{origin.name}</h3>
+                    <p className="text-sm text-gray-600">{origin.lat.toFixed(6)}, {origin.lng.toFixed(6)}</p>
+                    <p className="text-xs text-gray-500">Punto de partida</p>
+                  </div>
+                )}
+
+                {destinations.map((dest, index) => {
+                  const orderIndex = optimalPath.findIndex(p => p.lat === dest.lat && p.lng === dest.lng);
+                  return (
+                    <div 
+                      key={index} 
+                      className="bg-blue-50 p-3 rounded border border-blue-200"
+                      style={{ borderLeft: `4px solid ${COLOR_PALETTE[index % COLOR_PALETTE.length]}` }}
+                    >
+                      <h3 className="font-semibold" style={{ color: COLOR_PALETTE[index % COLOR_PALETTE.length] }}>
+                        {dest.name}
+                        {orderIndex > 0 && (
+                          <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
+                            Orden: {orderIndex}
+                          </span>
+                        )}
+                      </h3>
+                      <p className="text-sm text-gray-600">{dest.lat.toFixed(6)}, {dest.lng.toFixed(6)}</p>
+                    </div>
+                  );
+                })}
               </div>
+              </div>
+
+                    <div className="flex flex-col gap-2 mt-5">
+                        <input
+                        type="text"
+                        placeholder="Nombre del lugar (opcional)"
+                        className="border border-gray-300 p-2 rounded w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        value={locationName}
+                        onChange={(e) => setLocationName(e.target.value)}
+                        />
+                        <div className="flex gap-2">
+                        <input
+                            type="text"
+                            placeholder="Coordenadas: lat, lng"
+                            className="border border-gray-300 p-2 rounded w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            value={newLocation}
+                            onChange={(e) => setNewLocation(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                        />
+                        <button 
+                            onClick={handleAdd}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
+                        >
+                            Agregar
+                        </button>
+                    </div>
+                </div>
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
               {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
-
-              <button
-                onClick={handlePlanRoute}
-                disabled={loading}
-                className={`w-full py-2 px-4 rounded transition-colors ${loading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700 text-white'}`}
-              >
-                {loading ? 'Calculando...' : 'Calcular Ruta Óptima'}
-              </button>
 
               {/* Información de la ruta */}
               {routeInfo && (
@@ -236,37 +266,16 @@ export default function RoutePlanner() {
                 </div>
               )}
 
-              {/* Lista de ubicaciones */}
-              <div className="mt-6 space-y-3">
-                {origin && (
-                  <div className="bg-red-50 p-3 rounded border border-red-200">
-                    <h3 className="font-semibold text-red-800">{origin.name}</h3>
-                    <p className="text-sm text-gray-600">{origin.lat.toFixed(6)}, {origin.lng.toFixed(6)}</p>
-                    <p className="text-xs text-gray-500">Punto de partida</p>
-                  </div>
-                )}
+            <div className="flex flex_row gap-5 mt-5">
+                
+                <button 
+                    onClick={handlePlanRoute}
+                    disabled={loading}
+                    className={`w-full py-2 px-4 rounded transition-colors ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                >
+                    {loading ? 'Calculando...' : 'Generar ruta'}
+                </button>
 
-                {destinations.map((dest, index) => {
-                  const orderIndex = optimalPath.findIndex(p => p.lat === dest.lat && p.lng === dest.lng);
-                  return (
-                    <div
-                      key={index}
-                      className="bg-blue-50 p-3 rounded border border-blue-200"
-                      style={{ borderLeft: `4px solid ${COLOR_PALETTE[index % COLOR_PALETTE.length]}` }}
-                    >
-                      <h3 className="font-semibold" style={{ color: COLOR_PALETTE[index % COLOR_PALETTE.length] }}>
-                        {dest.name}
-                        {orderIndex > 0 && (
-                          <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
-                            Orden: {orderIndex}
-                          </span>
-                        )}
-                      </h3>
-                      <p className="text-sm text-gray-600">{dest.lat.toFixed(6)}, {dest.lng.toFixed(6)}</p>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
           </div>
 
